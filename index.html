@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tell us about your brand</title>
+<style>
+  :root {
+    /* Palette flipped to dark mode.
+       432818 espresso  base 60 percent (page background)
+       FAF1DC pale cream (tint of FFE6A7, less yellow)  text and surfaces 30 percent
+       BB9457 tan       primary CTA 10 percent
+       6F1D1B burgundy  selected jewel accent
+       99582A sienna    borders and dividers
+    */
+    --bg-deep: #1F1108;       /* deepest espresso shade for page bg */
+    --bg-card: #2E1B11;       /* container surface */
+    --bg-raised: #432818;     /* option default surface (the espresso) */
+    --bg-hover: #5A3621;      /* tint for hover */
+    --espresso: #432818;
+    --burgundy: #6F1D1B;
+    --burgundy_hover: #8A2522;
+    --sienna: #99582A;
+    --tan: #BB9457;
+    --tan_hover: #CFAB72;
+    --cream: #FAF1DC;         /* paler tint of FFE6A7, less yellow */
+    --cream_bright: #FFF7E6;
+    --cream_warm: #FFE6A7;
+    --muted: #BB9457;
+    --border: rgba(187, 148, 87, 0.22);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    background:
+      radial-gradient(ellipse at 50% -10%, rgba(111, 29, 27, 0.35) 0%, transparent 55%),
+      var(--bg-deep);
+    color: var(--cream);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 720px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 44px 38px;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(187, 148, 87, 0.05) inset;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--tan);
+    text-transform: uppercase;
+    margin-bottom: 22px;
+    font-weight: 700;
+  }
+  .brand .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--tan);
+    box-shadow: 0 0 12px rgba(187, 148, 87, 0.6);
+  }
+
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 30px;
+  }
+  .progress {
+    flex: 1;
+    height: 6px;
+    background: rgba(187, 148, 87, 0.18);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--burgundy), var(--tan));
+    transition: width 0.5s cubic-bezier(.2,.8,.2,1);
+    border-radius: 10px;
+  }
+  .progress-text {
+    font-size: 12px;
+    color: var(--tan);
+    font-weight: 700;
+    min-width: 46px;
+    text-align: right;
+  }
+
+  .step { display: none; animation: fade 0.35s ease; }
+  .step.active { display: block; }
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-label {
+    font-size: 11px;
+    color: var(--tan);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 800;
+  }
+  .q-title {
+    font-size: 26px;
+    line-height: 1.25;
+    font-weight: 800;
+    margin-bottom: 22px;
+    color: var(--cream_bright);
+  }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 15px 18px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 15px;
+    color: var(--cream);
+    user-select: none;
+    font-weight: 500;
+  }
+  .option:hover {
+    border-color: var(--tan);
+    background: var(--bg-hover);
+    transform: translateX(3px);
+  }
+  .option.selected {
+    background: var(--burgundy);
+    border-color: var(--burgundy_hover);
+    color: var(--cream_bright);
+    box-shadow: 0 6px 22px rgba(111, 29, 27, 0.45);
+  }
+  .option .bullet {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--sienna);
+    flex-shrink: 0;
+    position: relative;
+    background: transparent;
+  }
+  .option.selected .bullet {
+    border-color: var(--cream_bright);
+    background: var(--cream_bright);
+  }
+  .option.selected .bullet::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    background: var(--burgundy);
+    border-radius: 50%;
+  }
+
+  .other-input {
+    margin-top: 8px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--sienna);
+    background: var(--bg-raised);
+    color: var(--cream);
+    width: 100%;
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    display: none;
+  }
+  .other-input.visible { display: block; }
+  .other-input:focus { border-color: var(--tan); }
+  .other-input::placeholder { color: rgba(250, 241, 220, 0.45); }
+
+  .text-input, textarea.text-input {
+    width: 100%;
+    background: var(--bg-raised);
+    border: 1px solid var(--sienna);
+    color: var(--cream);
+    padding: 14px 16px;
+    border-radius: 12px;
+    font-size: 15px;
+    outline: none;
+    transition: border 0.18s ease;
+    font-family: inherit;
+    resize: vertical;
+  }
+  .text-input::placeholder { color: rgba(250, 241, 220, 0.4); }
+  .text-input:focus { border-color: var(--tan); }
+  .input-group { margin-bottom: 14px; }
+  .input-group label {
+    display: block;
+    font-size: 11px;
+    color: var(--tan);
+    margin-bottom: 6px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 30px;
+  }
+  .btn {
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    font-family: inherit;
+  }
+  .btn-primary {
+    flex: 1;
+    background: var(--tan);
+    color: var(--espresso);
+    box-shadow: 0 8px 22px rgba(187, 148, 87, 0.28);
+  }
+  .btn-primary:hover { background: var(--tan_hover); transform: translateY(-1px); box-shadow: 0 12px 28px rgba(207, 171, 114, 0.4); }
+  .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-secondary {
+    background: transparent;
+    color: var(--tan);
+    border: 1px solid var(--sienna);
+    padding: 14px 22px;
+  }
+  .btn-secondary:hover { color: var(--cream_bright); border-color: var(--tan); }
+
+  /* Final screen */
+  .final h1 {
+    font-size: 30px;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    color: var(--cream_bright);
+  }
+  .final p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.55;
+    margin-bottom: 18px;
+  }
+  .dashboard {
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin: 22px 0;
+  }
+  .dashboard h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--tan);
+    margin-bottom: 14px;
+    font-weight: 800;
+  }
+  .dashboard ul { list-style: none; }
+  .dashboard ul li {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(187, 148, 87, 0.14);
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .dashboard ul li:last-child { border-bottom: none; }
+  .dashboard ul li .k { color: var(--tan); flex-shrink: 0; font-weight: 600; }
+  .dashboard ul li .v { text-align: right; font-weight: 600; color: var(--cream); }
+
+  .thanks {
+    text-align: center;
+    padding: 28px 8px;
+  }
+  .thanks h1 { font-size: 30px; color: var(--cream_bright); margin-bottom: 14px; }
+  .thanks p { color: var(--muted); font-size: 15px; line-height: 1.6; }
+
+  @media (max-width: 640px) {
+    body { padding: 16px; }
+    .container { padding: 30px 22px; border-radius: 18px; }
+    .q-title { font-size: 22px; }
+    .final h1, .thanks h1 { font-size: 24px; }
+    .nav { flex-direction: column-reverse; }
+    .btn-secondary, .btn-primary { width: 100%; flex: 1; min-height: 50px; }
+    .dashboard ul li { flex-direction: column; gap: 4px; }
+    .dashboard ul li .v { text-align: left; }
+  }
+  @media (max-width: 380px) {
+    body { padding: 12px; }
+    .container { padding: 24px 18px; border-radius: 16px; }
+    .q-title { font-size: 20px; line-height: 1.3; }
+    .option { padding: 14px 14px; font-size: 14px; gap: 10px; }
+    .brand { font-size: 11px; letter-spacing: 1.5px; }
+    .text-input { padding: 12px 14px; font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="brand">
+    <span class="dot"></span>
+    <span>Brand Onboarding Questionnaire</span>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText">0%</div>
+  </div>
+
+  <!-- INTRO -->
+  <div class="step active" data-step="intro">
+    <div class="q-label">Start here</div>
+    <div class="q-title">Tell us about your brand.</div>
+
+    <div class="input-group">
+      <label>Your name</label>
+      <input class="text-input" id="name" type="text" placeholder="Your full name" />
+    </div>
+    <div class="input-group">
+      <label>Your Instagram handle</label>
+      <input class="text-input" id="handle" type="text" placeholder="@yourhandle" />
+    </div>
+    <div class="input-group">
+      <label>Email</label>
+      <input class="text-input" id="email" type="email" placeholder="you@email.com" />
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-primary" onclick="next()">Begin</button>
+    </div>
+  </div>
+
+  <!-- Questions injected here -->
+  <div id="questions"></div>
+
+  <!-- FINAL DASHBOARD + open question -->
+  <div class="step" data-step="final">
+    <div class="final">
+      <h1>Here is what we recorded.</h1>
+      <p>Review your answers below. If anything is wrong, tap Back and fix it.</p>
+
+      <div class="dashboard">
+        <h3>Your answers</h3>
+        <ul id="summaryList"></ul>
+      </div>
+
+      <div class="input-group">
+        <label>Anything else you want us to know about you?</label>
+        <textarea class="text-input" id="extraInfo" rows="5" placeholder="Tell us anything about your business, your audience, your story, your offers, your team, or your goals that we should know. The more we know, the better the personalized system we build for you."></textarea>
+      </div>
+
+      <div class="nav">
+        <button class="btn btn-secondary" onclick="prev()">Back</button>
+        <button class="btn btn-primary" onclick="submitForm(event)">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- THANK YOU -->
+  <div class="step" data-step="thanks">
+    <div class="thanks">
+      <h1>Thank you.</h1>
+      <p>We will do our best to help you promote your brand and build a personalized system for you.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// =====================================================================
+// CONFIG — paste your Google Apps Script Web App URL here after deploy.
+// See SETUP.md for the one time wiring guide.
+// =====================================================================
+const CONFIG = {
+  endpoint: "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE"
+};
+
+const QUESTIONS = [
+  {
+    key: "profileType",
+    label: "Question 1",
+    title: "Who is behind this profile?",
+    multi: false,
+    hasOther: true,
+    options: [
+      "Personal brand or creator or coach",
+      "Local business",
+      "Online business or ecommerce",
+      "Infoproducer, course or mentorship",
+      "Agency, B2B or SaaS"
+    ]
+  },
+  {
+    key: "niche",
+    label: "Question 2",
+    title: "What is your main niche?",
+    multi: false,
+    hasOther: true,
+    options: [
+      "Business, entrepreneurship or money",
+      "Health, fitness or nutrition",
+      "Beauty, fashion or lifestyle",
+      "Education or personal development",
+      "Tech, AI or productivity",
+      "Food, cooking or restaurant",
+      "Relationships, mindset or spirituality",
+      "Travel, culture or entertainment"
+    ]
+  },
+  {
+    key: "offer",
+    label: "Question 3",
+    title: "What does your profile sell?",
+    multi: false,
+    hasOther: true,
+    options: [
+      "A product",
+      "A service or consulting",
+      "A course, mentorship or community",
+      "Personal brand, no offer yet",
+      "Sponsorships or partnerships",
+      "Multiple offers"
+    ]
+  },
+  {
+    key: "stage",
+    label: "Question 4",
+    title: "How big is your audience right now?",
+    multi: false,
+    hasOther: false,
+    options: [
+      "0 to 1,000",
+      "1,000 to 10,000",
+      "10,000 to 50,000",
+      "50,000 to 200,000",
+      "200,000 and above"
+    ]
+  },
+  {
+    key: "goal30",
+    label: "Question 5",
+    title: "What is your main goal for the next 30 days?",
+    multi: false,
+    hasOther: true,
+    options: [
+      "More followers",
+      "More sales or clients",
+      "Build authority in my niche",
+      "More leads or DMs",
+      "Brand deals or paid partnerships",
+      "More views"
+    ]
+  },
+  {
+    key: "problem",
+    label: "Question 6",
+    title: "What is the biggest problem you are facing right now?",
+    multi: false,
+    hasOther: true,
+    options: [
+      "Reach is flat, Instagram is not pushing me",
+      "Reach is fine but no engagement",
+      "Engagement is fine but no sales or leads",
+      "Positioning is generic, I sound like everyone",
+      "I cannot keep up with posting consistently",
+      "Branding is poor"
+    ]
+  },
+  {
+    key: "frequency",
+    label: "Question 7",
+    title: "How often do you post per week?",
+    multi: false,
+    hasOther: false,
+    options: [
+      "0 to 1 times a week",
+      "2 to 3 times a week",
+      "4 to 6 times a week",
+      "Daily, 7 or more times a week",
+      "Irregular posting"
+    ]
+  },
+  {
+    key: "format",
+    label: "Question 8",
+    title: "Which format works best for you, or which one do you want to dominate?",
+    multi: true,
+    hasOther: true,
+    options: [
+      "Reels or short video",
+      "Carousels",
+      "Static photos",
+      "Stories",
+      "Lives",
+      "Long form content",
+      "I do not know yet"
+    ]
+  },
+  {
+    key: "onCamera",
+    label: "Question 9",
+    title: "Are you comfortable on camera?",
+    multi: false,
+    hasOther: false,
+    options: [
+      "Yes, always",
+      "Sometimes, depends on the content",
+      "No, but I am willing to learn",
+      "No, I want a faceless strategy"
+    ]
+  },
+  {
+    key: "targetFollower",
+    label: "Question 10",
+    title: "Who is our target follower?",
+    multi: true,
+    hasOther: true,
+    options: [
+      "Entrepreneurs or business owners",
+      "Women 25 to 40",
+      "Men 25 to 40",
+      "Parents",
+      "Gen Z or students",
+      "Decision makers or B2B",
+      "Fitness or wellness audience",
+      "Local customers in my city"
+    ]
+  },
+  {
+    key: "competitor",
+    label: "Question 11",
+    title: "Who do you think is your biggest competitor?",
+    type: "competitor"
+  },
+  {
+    key: "differentiation",
+    label: "Question 12",
+    title: "What makes you different from your competitors?",
+    multi: false,
+    hasOther: true,
+    options: [
+      "A unique method or framework I created",
+      "Real results or case studies I can prove",
+      "My personality, story or lifestyle",
+      "Price, access or speed",
+      "I do not know yet"
+    ]
+  }
+];
+
+const state = {
+  stepIdx: 0,
+  answers: {},
+  others: {},
+  competitor: { name: "", handle: "" },
+  extraInfo: "",
+  user: {}
+};
+
+const qContainer = document.getElementById("questions");
+
+QUESTIONS.forEach((q, i) => {
+  const div = document.createElement("div");
+  div.className = "step";
+  div.dataset.step = "q" + i;
+
+  if (q.type === "competitor") {
+    div.innerHTML = `
+      <div class="q-label">${q.label}</div>
+      <div class="q-title">${q.title}</div>
+      <div class="input-group">
+        <label>Competitor name or brand</label>
+        <input class="text-input" id="compName" type="text" placeholder="Their name or brand name" oninput="onCompetitorInput(${i})"/>
+      </div>
+      <div class="input-group">
+        <label>Their Instagram handle, if you have it</label>
+        <input class="text-input" id="compHandle" type="text" placeholder="@theirhandle" oninput="onCompetitorInput(${i})"/>
+      </div>
+      <div class="nav">
+        <button class="btn btn-secondary" onclick="prev()">Back</button>
+        <button class="btn btn-primary" id="nextBtn-${i}" disabled onclick="next()">Continue</button>
+      </div>
+    `;
+  } else {
+    const optionsHtml = q.options.map(opt => `
+      <div class="option" data-value="${opt}">
+        <div class="bullet"></div>
+        <div>${opt}</div>
+      </div>
+    `).join("");
+    const otherHtml = q.hasOther ? `
+      <div class="option" data-value="__other__">
+        <div class="bullet"></div>
+        <div>Other</div>
+      </div>
+      <input class="other-input" id="other-${i}" type="text" placeholder="Type your answer here" oninput="onOtherInput(${i})"/>
+    ` : "";
+
+    div.innerHTML = `
+      <div class="q-label">${q.label}</div>
+      <div class="q-title">${q.title}</div>
+      <div class="options" data-qkey="${q.key}" data-multi="${q.multi}" data-qidx="${i}">
+        ${optionsHtml}
+        ${otherHtml}
+      </div>
+      <div class="nav">
+        <button class="btn btn-secondary" onclick="prev()">Back</button>
+        <button class="btn btn-primary" id="nextBtn-${i}" disabled onclick="next()">Continue</button>
+      </div>
+    `;
+  }
+  qContainer.appendChild(div);
+});
+
+// Option click handlers
+document.querySelectorAll(".options").forEach(group => {
+  group.addEventListener("click", (e) => {
+    const opt = e.target.closest(".option");
+    if (!opt) return;
+    const key = group.dataset.qkey;
+    const multi = group.dataset.multi === "true";
+    const idx = parseInt(group.dataset.qidx, 10);
+    const value = opt.dataset.value;
+    const otherInput = document.getElementById("other-" + idx);
+
+    if (multi) {
+      opt.classList.toggle("selected");
+      const current = state.answers[key] || [];
+      if (current.includes(value)) {
+        state.answers[key] = current.filter(v => v !== value);
+      } else {
+        state.answers[key] = [...current, value];
+      }
+      // Toggle other input visibility for multi
+      if (otherInput) {
+        const otherSelected = (state.answers[key] || []).includes("__other__");
+        otherInput.classList.toggle("visible", otherSelected);
+        if (!otherSelected) { otherInput.value = ""; state.others[key] = ""; }
+      }
+    } else {
+      group.querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
+      opt.classList.add("selected");
+      state.answers[key] = value;
+      if (otherInput) {
+        otherInput.classList.toggle("visible", value === "__other__");
+        if (value !== "__other__") { otherInput.value = ""; state.others[key] = ""; }
+      }
+    }
+    refreshNext(idx);
+  });
+});
+
+function onOtherInput(idx) {
+  const q = QUESTIONS[idx];
+  const val = document.getElementById("other-" + idx).value.trim();
+  state.others[q.key] = val;
+  refreshNext(idx);
+}
+
+function onCompetitorInput(idx) {
+  state.competitor.name = document.getElementById("compName").value.trim();
+  state.competitor.handle = document.getElementById("compHandle").value.trim();
+  state.answers[QUESTIONS[idx].key] = state.competitor.name || state.competitor.handle ? `${state.competitor.name}${state.competitor.handle ? " (" + state.competitor.handle + ")" : ""}` : "";
+  refreshNext(idx);
+}
+
+function refreshNext(idx) {
+  const q = QUESTIONS[idx];
+  const btn = document.getElementById("nextBtn-" + idx);
+  if (!btn) return;
+  if (q.type === "competitor") {
+    btn.disabled = !(state.competitor.name || state.competitor.handle);
+    return;
+  }
+  const ans = state.answers[q.key];
+  const isOther = q.multi ? (ans || []).includes("__other__") : ans === "__other__";
+  const otherFilled = !isOther || (state.others[q.key] && state.others[q.key].length > 0);
+  const hasAnswer = q.multi ? (ans && ans.length > 0) : !!ans;
+  btn.disabled = !(hasAnswer && otherFilled);
+}
+
+const ALL_STEPS = ["intro", ...QUESTIONS.map((_, i) => "q" + i), "final", "thanks"];
+
+function showStep(idx) {
+  document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+  const el = document.querySelector(`.step[data-step="${ALL_STEPS[idx]}"]`);
+  if (el) el.classList.add("active");
+  state.stepIdx = idx;
+  const pct = Math.round((idx / (ALL_STEPS.length - 1)) * 100);
+  document.getElementById("progressFill").style.width = pct + "%";
+  document.getElementById("progressText").textContent = pct + "%";
+  if (ALL_STEPS[idx] === "final") buildSummary();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function next() {
+  if (state.stepIdx === 0) {
+    state.user.name = document.getElementById("name").value.trim();
+    state.user.handle = document.getElementById("handle").value.trim();
+    state.user.email = document.getElementById("email").value.trim();
+    if (!state.user.name || !state.user.email) {
+      alert("Please add at least your name and email to continue.");
+      return;
+    }
+  }
+  if (state.stepIdx < ALL_STEPS.length - 1) showStep(state.stepIdx + 1);
+}
+
+function prev() {
+  if (state.stepIdx > 0) showStep(state.stepIdx - 1);
+}
+
+function buildSummary() {
+  const list = document.getElementById("summaryList");
+  const labels = {
+    profileType: "Profile type",
+    niche: "Niche",
+    offer: "Offer",
+    stage: "Audience size",
+    goal30: "30 day goal",
+    problem: "Biggest problem",
+    frequency: "Posting frequency",
+    format: "Format focus",
+    onCamera: "On camera",
+    targetFollower: "Target follower",
+    competitor: "Biggest competitor",
+    differentiation: "Differentiation"
+  };
+
+  const rows = [];
+  rows.push(`<li><span class="k">Name</span><span class="v">${esc(state.user.name)}</span></li>`);
+  rows.push(`<li><span class="k">Handle</span><span class="v">${esc(state.user.handle)}</span></li>`);
+  rows.push(`<li><span class="k">Email</span><span class="v">${esc(state.user.email)}</span></li>`);
+
+  Object.keys(labels).forEach(k => {
+    let v = state.answers[k];
+    if (Array.isArray(v)) {
+      v = v.map(x => x === "__other__" ? (state.others[k] || "Other") : x).join(", ");
+    } else if (v === "__other__") {
+      v = state.others[k] || "Other";
+    }
+    rows.push(`<li><span class="k">${labels[k]}</span><span class="v">${esc(v || "")}</span></li>`);
+  });
+
+  list.innerHTML = rows.join("");
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
+}
+
+function submitForm(ev) {
+  state.extraInfo = document.getElementById("extraInfo").value.trim();
+
+  // Build a clean payload. Each question is sent with its full text so the
+  // backend can use the question itself as the spreadsheet column header.
+  const cleanedAnswers = {};
+  const questionMap = {};
+  Object.entries(state.answers).forEach(([k, v]) => {
+    if (Array.isArray(v)) {
+      cleanedAnswers[k] = v.map(x => x === "__other__" ? (state.others[k] || "Other") : x);
+    } else {
+      cleanedAnswers[k] = v === "__other__" ? (state.others[k] || "Other") : v;
+    }
+  });
+  QUESTIONS.forEach(q => { questionMap[q.key] = q.title; });
+
+  const payload = {
+    submittedAt: new Date().toISOString(),
+    user: state.user,
+    answers: cleanedAnswers,
+    questionLabels: questionMap,
+    competitor: state.competitor,
+    extraInfo: state.extraInfo
+  };
+
+  // Lock the submit button while in flight
+  const target = ev && ev.target;
+  if (target) { target.disabled = true; target.textContent = "Submitting..."; }
+
+  const goNext = () => showStep(ALL_STEPS.length - 1);
+
+  const configured = CONFIG.endpoint && CONFIG.endpoint.indexOf("PASTE_YOUR") !== 0;
+  if (!configured) {
+    console.log("Submission payload (endpoint not configured):", payload);
+    goNext();
+    return;
+  }
+
+  fetch(CONFIG.endpoint, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  }).then(goNext).catch(goNext);
+}
+</script>
+</body>
+</html>
